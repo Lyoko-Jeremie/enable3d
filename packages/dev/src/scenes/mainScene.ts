@@ -12,50 +12,30 @@ export default class MainScene extends Scene3D {
   }
 
   create() {
-    this.third.warpSpeed('-orbitControls')
+    this.third.warpSpeed()
 
-    let rect = this.add.rectangle(50, 50, 50, 50, 0xff00ff)
-    rect.setInteractive()
-    rect.on('pointerdown', () => {
-      console.log('click')
-    })
+    this.third.physics?.debug?.enable()
 
-    let box = this.third.physics.add.box({ y: 10 })
+    let wrapper = new ExtendedObject3D()
+    wrapper.name = 'wrapper'
+    wrapper.position.set(0, 10, 0)
+    wrapper.rotation.x = -Math.PI / 3
+    let geo = new THREE.BoxBufferGeometry(10, 10, 10) // does only work with buffer geometry
+    let mesh = new THREE.Mesh(geo, new THREE.MeshNormalMaterial())
+    wrapper.add(mesh)
+    this.third.add.existing(wrapper)
 
-    // raycaster
-    const onMouseMove = (event: MouseEvent) => {
-      // calculate mouse position in normalized device coordinates
-      // (-1 to +1) for both components
-
-      let raycaster = new THREE.Raycaster()
-      let mouse = new THREE.Vector2()
-
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-
-      raycaster.setFromCamera(mouse, this.third.camera)
-
-      let intersects = raycaster.intersectObjects(this.third.scene.children)
-
-      console.log('intersects.length', intersects.length)
-
-      for (let i = 0; i < intersects.length; i++) {
-        // console.log('raycast', intersects[i].object)
-        // @ts-ignore
-        intersects[i].object?.material?.color?.set(0xff0000)
+    wrapper.traverse(child_ => {
+      let child = child_ as ExtendedObject3D
+      if (child instanceof THREE.Mesh) {
+        this.third.physics.add.existing(child, {
+          shape: 'concave',
+          mass: 0,
+          collisionFlags: 1,
+          autoCenter: false
+        })
       }
-    }
-
-    window.addEventListener('pointerdown', onMouseMove)
-
-    // remove the event once phaser restarts
-    this.events.on('shutdown', () => {
-      window.removeEventListener('pointerdown', onMouseMove)
     })
-
-    setTimeout(() => {
-      this.scene.restart()
-    }, 5000)
   }
 
   update() {}

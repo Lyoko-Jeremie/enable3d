@@ -19,8 +19,8 @@ export { ExtendedGroup }
 import Shapes from './shapes'
 import Constraints from './constraints'
 import { EventEmitter } from 'eventemitter3'
-import { Vector3, Quaternion, Scene, Mesh, Euler } from '@enable3d/three-wrapper/dist/index'
-import { createCollisionShapes } from './three-to-ammo'
+import { Vector3, Quaternion, Scene, Mesh, Euler, Matrix4 } from '@enable3d/three-wrapper/dist/index'
+import { createCollisionShapes, createTriMeshShape, iterateGeometries } from './three-to-ammo'
 import { addTorusShape } from './torusShape'
 import Factories from '@enable3d/common/dist/factories'
 import { CollisionEvents } from './collisionEvents'
@@ -637,7 +637,18 @@ class AmmoPhysics extends EventEmitter {
         collisionShape = createCollisionShapes(object, { type: 'mesh', concave: false, ...params.collider })
         break
       case 'concaveMesh':
-        collisionShape = createCollisionShapes(object, { type: 'mesh', concave: true, ...params.collider })
+        // collisionShape = createCollisionShapes(object, { type: 'mesh', concave: true, ...params.collider })
+
+        const matrixWorld = new Matrix4()
+        const vertices: any[] = []
+        const matrices: any[] = []
+        const indexes: any[] = []
+        iterateGeometries(object, {}, (vertexArray: any, matrixArray: any, indexArray: any) => {
+          vertices.push(vertexArray)
+          matrices.push(matrixArray)
+          indexes.push(indexArray)
+        })
+        collisionShape = createTriMeshShape(vertices, matrices, indexes, matrixWorld.elements) as any
         break
     }
 
