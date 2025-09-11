@@ -225,8 +225,8 @@ export default class Factories {
     const { x, y, z, name, breakable = false, ...rest } = sphereConfig
     const geometry = new SphereGeometry(
       rest.radius || 1,
-      rest.widthSegments || 16,
-      rest.heightSegments || 12,
+      rest.widthSegments || 32,
+      rest.heightSegments || 16,
       rest.phiStart || undefined,
       rest.phiLength || undefined,
       rest.thetaStart || undefined,
