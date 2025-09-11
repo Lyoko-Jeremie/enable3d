@@ -267,18 +267,26 @@ class PhysicsBody {
     this.tmpBtVector3.setValue(x, y, z)
     this.ammo.applyCentralImpulse(this.tmpBtVector3)
   }
+  /**
+   * @deprecated applyLocalTorque has been removed in the newer versions of ammo.js
+   */
   public applyCentralLocalForce(x: number, y: number, z: number) {
-    this.tmpBtVector3.setValue(x, y, z)
-    this.ammo.applyCentralLocalForce(this.tmpBtVector3)
+    console.warn('applyCentralLocalForce has been removed in the newer versions of ammo.js')
+    // this.tmpBtVector3.setValue(x, y, z)
+    // this.ammo.applyCentralLocalForce(this.tmpBtVector3)
   }
   public applyImpulse(impulse: XYZ, relativePosition: XYZ) {
     this.tmpBtVector3.setValue(impulse.x || 0, impulse.y || 0, impulse.z || 0)
     this.tmpBtVector3_1.setValue(relativePosition.x || 0, relativePosition.y || 0, relativePosition.z || 0)
     this.ammo.applyImpulse(this.tmpBtVector3, this.tmpBtVector3_1)
   }
+  /**
+   * @deprecated applyLocalTorque has been removed in the newer versions of ammo.js
+   */
   public applyLocalTorque(x: number, y: number, z: number) {
-    this.tmpBtVector3.setValue(x, y, z)
-    this.ammo.applyLocalTorque(this.tmpBtVector3)
+    console.warn('applyLocalTorque has been removed in the newer versions of ammo.js')
+    // this.tmpBtVector3.setValue(x, y, z)
+    // this.ammo.applyLocalTorque(this.tmpBtVector3)
   }
   public applyTorque(x: number, y: number, z: number) {
     this.tmpBtVector3.setValue(x, y, z)

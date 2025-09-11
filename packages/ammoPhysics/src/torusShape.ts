@@ -21,7 +21,7 @@ export const createTorusShape = (
   const cylinderShape = new Ammo.btCylinderShape(btHalfExtents)
   cylinderShape.setMargin(0.05)
 
-  const compoundShape = new Ammo.btCompoundShape()
+  const compoundShape = new Ammo.btCompoundShape(true, 0)
 
   const forward = new Ammo.btVector3(0, 0, 1)
   const side = new Ammo.btVector3(0, radius, 0)

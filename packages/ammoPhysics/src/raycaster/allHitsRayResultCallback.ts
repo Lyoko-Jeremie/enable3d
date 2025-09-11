@@ -48,8 +48,8 @@ export default class AllHitsRayResultCallback {
     const objects = this._btRayCallback.get_m_collisionObjects()
 
     for (let i = objects.size() - 1; i >= 0; i--) {
-      // @ts-expect-error: castObject is not yet defined in the Ammo.js types.
       const rb = Ammo.castObject(objects.at(i), Ammo.btRigidBody)
+      // @ts-expect-error
       threeObjects.push(rb.threeObject)
     }
     return threeObjects

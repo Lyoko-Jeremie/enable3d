@@ -384,12 +384,12 @@ class AmmoPhysics extends Events {
       const contactManifold = dispatcher.getManifoldByIndexInternal(i)
       const numContacts = contactManifold.getNumContacts()
 
-      // @ts-expect-error: castObject is not yet defined in the Ammo.js types.
       const rb0 = Ammo.castObject(contactManifold.getBody0(), Ammo.btRigidBody)
-      // @ts-expect-error: castObject is not yet defined in the Ammo.js types.
       const rb1 = Ammo.castObject(contactManifold.getBody1(), Ammo.btRigidBody)
 
+      // @ts-expect-error
       const threeObject0 = rb0.threeObject as ExtendedMesh
+      // @ts-expect-error
       const threeObject1 = rb1.threeObject as ExtendedMesh
 
       if (!threeObject0 || !threeObject1) {
@@ -398,6 +398,7 @@ class AmmoPhysics extends Events {
 
       // do not check collision between 2 unnamed objects
       // (fragments do not have a name, for example)
+      // @ts-expect-error
       if (rb0.name === '' && rb1.name === '') continue
 
       /**
@@ -851,7 +852,7 @@ class AmmoPhysics extends Events {
   }
 
   public mergeCollisionShapesToCompoundShape(collisionShapes: Ammo.btCollisionShape[]): Ammo.btCompoundShape {
-    const compoundShape = new Ammo.btCompoundShape()
+    const compoundShape = new Ammo.btCompoundShape(true, 0)
     collisionShapes.forEach(shape => {
       // @ts-expect-error: I use some custom properties here.
       const { _childOffset, _compoundOffset } = shape

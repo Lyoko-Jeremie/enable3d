@@ -93,6 +93,7 @@ class DebugDrawer {
     this.debugDrawer.setDebugMode = this.setDebugMode.bind(this)
     this.debugDrawer.getDebugMode = this.getDebugMode.bind(this)
 
+    // @ts-expect-error
     this.world.setDebugDrawer(this.debugDrawer)
   }
 
@@ -160,7 +161,7 @@ class DebugDrawer {
     this.geometry.attributes.color.setXYZ(this.index++, r, g, b)
   }
 
-  reportErrorWarning(warningString: string) {
+  reportErrorWarning(warningString: number) {
     // eslint-disable-next-line no-prototype-builtins
     if (Ammo.hasOwnProperty('Pointer_stringify')) {
       console.warn((Ammo as any).Pointer_stringify(warningString))
