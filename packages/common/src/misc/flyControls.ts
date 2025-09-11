@@ -18,9 +18,14 @@ export interface FlyControlsConfig extends FirstPersonControlsConfig {
  * A simple FlyController I use to fly around the world while developing.
  */
 export class FlyControls extends FirstPersonControls {
-  keyboard = new Keyboard()
-  tap!: Tap
-  speed: number
+  private keyboard = new Keyboard()
+  private tap!: Tap
+  private speed: number
+  private shouldUpdate = true
+  private viewDelta = {
+    x: 0,
+    y: 0
+  }
 
   constructor(
     camera: PerspectiveCamera | OrthographicCamera,
@@ -34,14 +39,18 @@ export class FlyControls extends FirstPersonControls {
     super(camera, target, config)
 
     this.tap = new Tap(domElement)
-    this.speed = config.speed || 0.1
+    this.speed = config.speed || 0.2
+
+    //this.shouldUpdate = true
 
     this.tap.on.move(({ position, event, dragging }) => {
       const isDragging = dragging
       if (isDragging) {
         const x = this.tap.lastPosition.x - this.tap.currentPosition.x
         const y = this.tap.lastPosition.y - this.tap.currentPosition.y
-        super.update(x, y)
+        this.viewDelta.x += x
+        this.viewDelta.y += y
+        this.shouldUpdate = true
       }
     })
   }
@@ -81,24 +90,48 @@ export class FlyControls extends FirstPersonControls {
     // Calculate phi (polar angle)
     const phi = Math.atan2(Math.sqrt(direction.x * direction.x + direction.z * direction.z), direction.y)
 
+    if (this.keyboard.key('KeyQ').isDown) {
+      //q super.update(0, 0)
+      this.target.position.y -= this.speed / 2
+      this.shouldUpdate = true
+    }
+
+    if (this.keyboard.key('KeyE').isDown) {
+      this.target.position.y += this.speed / 2
+      this.shouldUpdate = true
+    }
+
     if (this.keyboard.key('KeyW').isDown) {
-      this.moveObjectTowards(this.target, theta, phi, this.speed)
+      this.target.position.x += Math.sin(theta) * this.speed
+      this.target.position.z += Math.cos(theta) * this.speed
+      this.shouldUpdate = true
+      // this.moveObjectTowards(this.target, theta, phi, this.speed)
     }
 
     if (this.keyboard.key('KeyS').isDown) {
-      this.moveObjectTowards(this.target, theta, phi, this.speed, true)
+      this.target.position.x += Math.sin(theta + Math.PI) * this.speed
+      this.target.position.z += Math.cos(theta + Math.PI) * this.speed
+      this.shouldUpdate = true
+      // this.moveObjectTowards(this.target, theta, phi, this.speed, true)
     }
 
     if (this.keyboard.key('KeyA').isDown) {
       this.target.position.x += Math.sin(theta + Math.PI / 2) * this.speed
       this.target.position.z += Math.cos(theta + Math.PI / 2) * this.speed
+      this.shouldUpdate = true
     }
 
     if (this.keyboard.key('KeyD').isDown) {
       this.target.position.x += Math.sin(theta - Math.PI / 2) * this.speed
       this.target.position.z += Math.cos(theta - Math.PI / 2) * this.speed
+      this.shouldUpdate = true
     }
 
-    super.update(0, 0)
+    if (this.shouldUpdate) {
+      this.shouldUpdate = false
+      super.update(this.viewDelta.x, this.viewDelta.y)
+      this.viewDelta.x = 0
+      this.viewDelta.y = 0
+    }
   }
 }
